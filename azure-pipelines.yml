@@ -13,13 +13,13 @@ stages:
         pool:
           vmimage: windows-latest
         steps:
-- task: AzureResourceManagerTemplateDeployment@3
-  inputs:
-    deploymentScope: 'Subscription'
-    azureResourceManagerConnection: 'devopsarm'
-    subscriptionId: 'c7aa45a6-0b42-4d61-b5ed-e7102b6066b3'
-    location: 'East US'
-    templateLocation: 'Linked artifact'
-    csmFile: 'azuredeploy.json'
-    csmParametersFile: 'azuredeploy.nonprod.parameters.json'
-    deploymentMode: 'Incremental'
+        - task: AzureResourceManagerTemplateDeployment@3
+          inputs:
+            deploymentScope: 'Subscription'
+            azureResourceManagerConnection: 'devopsarm'
+            subscriptionId: 'c7aa45a6-0b42-4d61-b5ed-e7102b6066b3'
+            location: 'East US'
+            templateLocation: 'Linked artifact'
+            csmFile: 'azuredeploy.json'
+            csmParametersFile: 'azuredeploy.nonprod.parameters.json'
+            deploymentMode: 'Incremental'
