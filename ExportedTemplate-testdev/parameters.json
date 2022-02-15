@@ -1,0 +1,18 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "managedClusters_testdev_name": {
+            "value": null
+        },
+        "virtualNetworks_testdev_vnet_externalid": {
+            "value": null
+        },
+        "publicIPAddresses_328a9591_f2df_412e_a13d_8ce709a151ec_externalid": {
+            "value": null
+        },
+        "userAssignedIdentities_testdev_agentpool_externalid": {
+            "value": null
+        }
+    }
+}
