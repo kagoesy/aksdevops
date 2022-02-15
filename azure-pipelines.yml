@@ -24,4 +24,5 @@ stages:
               location: 'West US 2'
               templateLocation: 'URL of the file'
               csmFileLink: 'https://github.com/kagoesy/aksdevops/blob/main/ExportedTemplate-testdev/template.json'
+              csmParametersFileLink: 'https://github.com/kagoesy/aksdevops/blob/main/ExportedTemplate-testdev/parameters.json'
               deploymentMode: 'Incremental'
