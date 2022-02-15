@@ -1,0 +1,174 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "region": {
+            "metadata": {
+                "description": "Defines the region for use with naming (e.g. ae or ase)."
+            },
+            "type": "string"
+        },
+        "environmentType": {
+            "metadata": {
+                "description": "Defines the logical environment the deployment belongs to."
+            },
+            "type": "string",
+            "allowedValues": [
+                "ci",
+                "nonprod",
+                "prod"
+            ]
+        },
+        "location": {
+            "type": "string",
+            "metadata": {
+                "description": "The location of AKS resource."
+            }
+        },
+        "osDiskSizeGB": {
+            "type": "int",
+            "defaultValue": 0,
+            "metadata": {
+                "description": "Disk size (in GiB) to provision for each of the agent pool nodes. This value ranges from 0 to 1023. Specifying 0 will apply the default disk size for that agentVMSize."
+            },
+            "minValue": 0,
+            "maxValue": 1023
+        },
+        "kubernetesVersion": {
+            "type": "string",
+            "defaultValue": "1.7.7",
+            "metadata": {
+                "description": "The version of Kubernetes."
+            }
+        },
+        "aksLinuxAgentSize": {
+            "metadata": {
+                "description": "VM Size for the linux agents"
+            },
+            "type": "string"
+        },
+        "aksLinuxAgentCount": {
+            "metadata": {
+                "description": "Default number of agents to deploy"
+            },
+            "type": "int"
+        },
+		"managedClusters_ae_nonprod_cluster_xtnmuy_aks_name": {            
+            "type": "String"
+        },
+        "virtualNetworks_ae_nonprod_public_vnet_externalid": {            
+            "type": "String"
+        },
+        "workspaces_sea_nonprod_monitoring_workspace_externalid": {            
+            "type": "String"
+        }		
+    },
+    "variables": {
+        "appName": "cluster",
+        "uniquePortion": "[substring(uniqueString(resourceGroup().name),0,6)]",
+        "baseName": "[concat(parameters('region'),'-',parameters('environmentType'), '-',variables('appName'),'-', variables('uniquePortion'))]",        
+        "kubernetesName": "[concat(variables('baseName'),'-aks')]",
+        "dnsPrefix": "[concat(variables('kubernetesName'), '-dns')]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.ContainerService/managedClusters",
+            "apiVersion": "2021-10-01",
+            "name": "[parameters('managedClusters_ae_nonprod_cluster_xtnmuy_aks_name')]",
+            "location": "[parameters('location')]",
+            "tags": {
+                "Environment": "Non Production (Shared)",
+                "LoB": "Technology",
+                "Product": "Kubernetes",
+                "Service": "Deployment ",
+                "Usage": "Shared"
+            },
+            "properties": {
+                "kubernetesVersion": "[parameters('kubernetesVersion')]",
+                "dnsPrefix": "nonprod-cluster-xtnmuy",
+                "agentPoolProfiles": [
+                    {
+                        "name": "lnxds2v2",
+                        "count": "[parameters('aksLinuxAgentCount')]",
+                        "vmSize": "[parameters('aksLinuxAgentSize')]",
+                        "osDiskType": "Managed",
+                        "vnetSubnetID": "[concat(parameters('virtualNetworks_ae_nonprod_public_vnet_externalid'), '/subnets/aks-apps-nonprod-subnet')]",
+                        "maxPods": 30,
+                        "type": "AvailabilitySet",
+                        "powerState": {
+                            "code": "Running"
+                        },
+                        "orchestratorVersion": "[parameters('kubernetesVersion')]",
+                        "enableNodePublicIP": false,
+                        "mode": "System",
+                        "osType": "Linux"
+                    }
+                ],
+                "linuxProfile": {
+                    "adminUsername": "aksnonprod",
+                    "ssh": {
+                        "publicKeys": [
+                            {
+                                "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAhY7wL+dLeMFN1nipFZml15dlA9rAeB24TJm/t2UqNBirxkuQYRpq1nt8leatW13E7gtqE0bPcF3XnHGrD/KCspxcAc3Ex0kemtbwXB+wsOfhqwk78xgMGPc80inKsJnLCYGGQw371N6bGlTlrrvFlEDHUneyt7qp+Pzu/gW04s2kS+Ds2Eq2sVFnyxah3TB1NCxzkUBicb99n3IT5wHTosoig3XHgazDW+jWfswd/WL//03YJpmSTNagYf35f1wwhnCn5f0hY10829sICta+BSG1USNOgWPAb5ixWrulbLVak7yBT92mGWFOI4lT9UY4eH1bCMdV9H7qeyNhuGhaUw== aksnonprod"
+                            }
+                        ]
+                    }
+                },
+                "servicePrincipalProfile": {
+                    "clientId": "5696057b-508f-47f4-8639-7aba7b7de0e4"
+                },
+                "addonProfiles": {
+                    "kubedashboard": {
+                        "enabled": true
+                    },
+                    "omsagent": {
+                        "enabled": true,
+                        "config": {
+                            "loganalyticsworkspaceresourceid": "[parameters('workspaces_sea_nonprod_monitoring_workspace_externalid')]"
+                        }
+                    }
+                },
+                "nodeResourceGroup": "[concat('MC_ae-nonprod-apps-aks-rg_', parameters('managedClusters_ae_nonprod_cluster_xtnmuy_aks_name'), '_australiaeast')]",
+                "enableRBAC": true,
+                "networkProfile": {
+                    "networkPlugin": "azure",
+                    "loadBalancerSku": "Basic",
+                    "serviceCidr": "10.130.0.0/16",
+                    "dnsServiceIP": "10.130.0.10",
+                    "dockerBridgeCidr": "172.17.0.1/16",
+                    "outboundType": "loadBalancer"
+                },
+                "aadProfile": {
+                    "managed": true,
+                    "adminGroupObjectIDs": [
+                        "5dee14d5-8c08-42fe-bddb-cf4b8fecccdc"
+                    ],
+                    "tenantID": "8d38bb39-597f-45b8-8be9-24005692c305"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ContainerService/managedClusters/agentPools",
+            "apiVersion": "2021-10-01",
+            "name": "[concat(parameters('managedClusters_ae_nonprod_cluster_xtnmuy_aks_name'), '/lnxds2v2')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ContainerService/managedClusters', parameters('managedClusters_ae_nonprod_cluster_xtnmuy_aks_name'))]"
+            ],
+            "properties": {
+                "count": 5,
+                "vmSize": "Standard_DS2_v2",
+                "osDiskType": "Managed",
+                "vnetSubnetID": "[concat(parameters('virtualNetworks_ae_nonprod_public_vnet_externalid'), '/subnets/aks-apps-nonprod-subnet')]",
+                "maxPods": 30,
+                "type": "AvailabilitySet",
+                "powerState": {
+                    "code": "Running"
+                },
+                "orchestratorVersion": "[parameters('kubernetesVersion')]",
+                "enableNodePublicIP": false,
+                "mode": "System",
+                "osType": "Linux"
+            }
+        }
+    ]
+}

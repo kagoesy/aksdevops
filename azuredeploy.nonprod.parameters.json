@@ -1,0 +1,36 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "region": {
+            "value": "ae"
+        },
+        "environmentType": {
+            "value": "nonprod"
+        },
+    "location": {
+      "value": "australiaeast"
+    },
+    "osDiskSizeGB": {
+      "value": 0
+    },
+    "kubernetesVersion": {
+      "value": "1.19.13"
+    },
+    "aksLinuxAgentSize": {
+      "value": "Standard_DS2_v2"
+    },
+    "aksLinuxAgentCount":{
+      "value": 5
+    },
+	"managedClusters_ae_nonprod_cluster_xtnmuy_aks_name": {
+		"value": "ae-nonprod-cluster-xtnmuy-aks"
+	},
+	"virtualNetworks_ae_nonprod_public_vnet_externalid": {
+		"value": "/subscriptions/f2c39ad1-d8f5-49bb-8a9a-05e32ecc0698/resourceGroups/ae-nonprod-public-network-rg/providers/Microsoft.Network/virtualNetworks/ae-nonprod-public-vnet"
+	},
+	"workspaces_sea_nonprod_monitoring_workspace_externalid": {
+		"value": "/subscriptions/f2c39ad1-d8f5-49bb-8a9a-05e32ecc0698/resourceGroups/global-nonprod-management-rg/providers/Microsoft.OperationalInsights/workspaces/sea-nonprod-monitoring-workspace"
+	}    
+  }
+}
