@@ -11,7 +11,7 @@ resources:
   containers:
     - container: test
       type: ACR
-      image: hello-world:v1
+      image: v1
       azureSubscription: test
       resourceGroup: testacr
       registry: testacr717
