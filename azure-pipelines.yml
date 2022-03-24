@@ -11,9 +11,10 @@ resources:
   containers:
     - container: test
       type: ACR
-      image: testacr717.azurecr.io/hello-world:v1
+      image: hello-world:v1
       azureSubscription: test
       resourceGroup: testacr
+      registry: testacr717
 
 stages:
   - stage: test
