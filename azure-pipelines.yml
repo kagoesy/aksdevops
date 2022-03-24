@@ -15,6 +15,7 @@ resources:
       azureSubscription: test
       resourceGroup: testacr
       registry: testacr717
+      repository: hello-world
 
 stages:
   - stage: test
