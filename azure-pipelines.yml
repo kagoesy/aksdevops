@@ -23,6 +23,11 @@ stages:
     jobs:
     - job: test
       steps:
+      - task: Docker@2
+        displayName: Login to ACR
+        inputs:
+          command: login
+          containerRegistry: testdevacr
       - script: echo "I can run inside the container (it starts by default)"
         target:
           container: test
