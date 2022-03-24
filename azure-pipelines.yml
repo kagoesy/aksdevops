@@ -12,7 +12,7 @@ resources:
     - container: test
       type: ACR
       image: testacr717.azurecr.io/hello-world:v1
-      endpoint: 
+      azureSubscription: test
 
 stages:
   - stage: test
