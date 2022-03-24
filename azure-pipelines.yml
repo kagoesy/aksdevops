@@ -27,4 +27,4 @@ stages:
         displayName: run image
         inputs:
          command: start
-         container: $(resources.container.test)
+         container: test
