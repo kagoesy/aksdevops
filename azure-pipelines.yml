@@ -7,22 +7,21 @@
 trigger:
 - "*"
 
+resources:
+  containers:
+    - container: test
+      type: ACR
+      image: testacr717.azurecr.io/hello-world:v1
+      endpoint: 
+
 stages:
   - stage: test
+    displayName: test
     jobs:
-      - job: 'validateandtest'
-        pool:
-          vmimage: windows-latest
-        steps:
-          - task: AzureResourceManagerTemplateDeployment@3
-            inputs:
-              deploymentScope: 'Resource Group'
-              azureResourceManagerConnection: 'devopsarm'
-              subscriptionId: 'c7aa45a6-0b42-4d61-b5ed-e7102b6066b3'
-              action: 'Create Or Update Resource Group'
-              resourceGroupName: 'testdev'
-              location: 'West US 2'
-              templateLocation: 'URL of the file'
-              csmFileLink: 'https://github.com/kagoesy/aksdevops/blob/main/ExportedTemplate-testdev/template.json'
-              csmParametersFileLink: 'https://github.com/kagoesy/aksdevops/blob/main/ExportedTemplate-testdev/parameters.json'
-              deploymentMode: 'Incremental'
+    - job: test
+      steps:
+      - task: Docker@2
+        displayName: run image
+        inputs:
+         command: start
+         container: $(resources.container.test)
