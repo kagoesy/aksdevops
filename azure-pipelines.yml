@@ -13,6 +13,7 @@ resources:
       type: ACR
       image: testacr717.azurecr.io/hello-world:v1
       azureSubscription: test
+      resourceGroup: testacr
 
 stages:
   - stage: test
