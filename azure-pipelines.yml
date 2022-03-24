@@ -23,8 +23,10 @@ stages:
     jobs:
     - job: test
       steps:
+      - script: echo "I can run inside the container (it starts by default)"
+        target:
+          container: test
       - task: Docker@2
-        displayName: run image
         inputs:
-         command: start
-         container: test
+          command: stop
+          container: test
